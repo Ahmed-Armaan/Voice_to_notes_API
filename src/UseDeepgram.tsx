@@ -4,15 +4,21 @@ const API_KEY = "5d7f7d92abd34321780f711cddad3b4e764711f7";
 const WS_URL = "wss://api.deepgram.com/v1/listen?model=nova-2&smart_format=true&interim_results=true";
 const SERVER = import.meta.env.VITE_SERVER_URL ?? "http://localhost:8080";
 
+interface Note {
+	id: number;
+	text: string;
+	time: string;
+}
+
 export function useDeepgram() {
 	const [recording, setRecording] = useState(false);
 	const [liveText, setLiveText] = useState("");
-	const [notes, setNotes] = useState([]);
-	const [balance, setBalance] = useState(null);
+	const [notes, setNotes] = useState<Note[]>([]);
+	const [balance, setBalance] = useState<number | null>(null);
 
-	const socketRef = useRef(null);
-	const recorderRef = useRef(null);
-	const streamRef = useRef(null);
+	const socketRef = useRef<WebSocket | null>(null);
+	const recorderRef = useRef<MediaRecorder | null>(null);
+	const streamRef = useRef<MediaStream | null>(null);
 	const liveRef = useRef("");
 
 	const fetchBalance = useCallback(() => {
